@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {TorrentClient} from "../index";
-import {NotFound, OK, TorrentAPIResponse} from "../types/Response";
+import {BadRequest, NotFound, OK, TorrentAPIResponse} from "../types/Response";
 
 interface EnableProvidersRequest {
     [name: string]: boolean
@@ -41,16 +41,15 @@ providersRouter.get('/providers/enabled', (req, res: Response<TorrentAPIResponse
 
 providersRouter.post('/providers', (req: Request<{}, {}, EnableProvidersRequest>, res) => {
     if (!Object.keys(req.body).every(providerExists))
-        NotFound(res);
+        BadRequest(res, 'One or more of providers in request is unknown');
 
     Object.entries(req.body).forEach((entry) => {
         const [providerName, enabled] = entry;
         if (enabled) TorrentClient.enableProvider(providerName);
         else TorrentClient.disableProvider(providerName);
     });
-    res.status(200);
-    res.send({
-        message: 'Providers enabled successfully',
+
+    OK(res, {
         enabledProviders: [
             ...TorrentClient.getActiveProviders().map(el => el.name)
         ]
