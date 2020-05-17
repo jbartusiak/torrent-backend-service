@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "homepage": "https://github.com/jbartusiak/torrent-backend-service",
+  "repository": "https://github.com/jbartusiak/torrent-backend-service",
   "scripts": {
     "start": "npm run build && node dist/bundle.js",
     "start:dev": "nodemon",
