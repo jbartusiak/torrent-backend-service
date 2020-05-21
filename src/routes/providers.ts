@@ -43,16 +43,24 @@ providersRouter.post('/providers', (req: Request<{}, {}, EnableProvidersRequest>
     if (!Object.keys(req.body).every(providerExists))
         BadRequest(res, 'One or more of providers in request is unknown');
 
+    const errors: {[provider: string]: string} = {};
+
     Object.entries(req.body).forEach((entry) => {
         const [providerName, enabled] = entry;
-        if (enabled) TorrentClient.enableProvider(providerName);
-        else TorrentClient.disableProvider(providerName);
+        try {
+            if (enabled) TorrentClient.enableProvider(providerName);
+            else TorrentClient.disableProvider(providerName);
+        }
+        catch (error) {
+            errors[providerName] = error.message;
+        }
     });
 
     OK(res, {
         enabledProviders: [
             ...TorrentClient.getActiveProviders().map(el => el.name)
-        ]
+        ],
+        errors
     })
 });
 
