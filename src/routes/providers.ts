@@ -6,7 +6,7 @@ interface EnableProvidersRequest {
     [name: string]: boolean
 }
 
-const allProviders = TorrentClient.getProviders();
+const allProviders = TorrentClient.getProviders().filter(p => !p.requireAuthentification);
 const providersRouter = Router();
 
 const providerExists = (name: string) => !!allProviders.find(provider => provider.name === name);
