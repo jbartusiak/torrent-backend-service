@@ -36,14 +36,9 @@ export class Transmission {
     private _requestUrl: string;
     private _sessionId: string;
 
-
     constructor(options: TransmissionOptions = transmisionOptions) {
         this._requestUrl = `http://${options.host}:${options.port}/${options.url}`;
         this._sessionId = '';
-    }
-
-    public init() {
-        this.prepareSessionId().then(console.log);
     }
 
     private createHeaders() {
