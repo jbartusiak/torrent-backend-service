@@ -1,4 +1,4 @@
-# Node.js Torrent Backend Service
+# Node.js Transmission Backend Service
 This application allows for searching and downloading 
 torrents using popular providers and transmission-rpc 
 torrent client.

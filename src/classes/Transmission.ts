@@ -1,0 +1,89 @@
+import {
+    ITransmissionRequest,
+    ITransmissionResponse,
+    ITransmissionTorrentAccessorRequest, ITransmissionTorrentAccessorResponse,
+    TransmissionOptions
+} from "../types/Transmission";
+import axios, {AxiosResponse} from 'axios';
+
+const transmisionOptions: TransmissionOptions = {
+    host: '192.168.0.254',
+    port: 9091,
+    username: 'transmission',
+    password: 'torrent',
+    ssl: false,
+    url: 'transmission/rpc'
+};
+
+export const mapTorrentToSimple = (torrents: any[]) => {
+    return torrents.map(torrent => ({
+        id: torrent.id,
+        name: torrent.name,
+        status: torrent.status,
+        eta: torrent.eta,
+        progress: torrent.percentDone,
+        peers: torrent.peers.length,
+        seeds: torrent.peersSendingToUs,
+        savePath: torrent.downloadDir,
+    }));
+}
+
+export class Transmission {
+    private _requestUrl: string;
+    private _sessionId: string;
+
+
+    constructor(options: TransmissionOptions = transmisionOptions) {
+        this._requestUrl = `http://${options.host}:${options.port}/${options.url}`;
+        this._sessionId = '';
+    }
+
+    public init() {
+        this.prepareSessionId().then(console.log);
+    }
+
+    private createHeaders() {
+        const token = Buffer.from(`${transmisionOptions.username}:${transmisionOptions.password}`).toString('base64');
+
+        return {
+            Authorization: `Basic ${token}`,
+            'X-Transmission-Session-Id': this._sessionId
+        }
+    }
+
+    private async prepareSessionId() {
+        const headers = this.createHeaders();
+        return await axios
+            .post(this._requestUrl, {}, {headers})
+            .catch(error => {
+                if (error.response && error.response.status === 409) {
+                    const {response} = error;
+                    this._sessionId = response.headers['x-transmission-session-id']
+                    console.log(`Session id set to: ${this._sessionId}`);
+                }
+            });
+    }
+
+    private async call<T extends ITransmissionResponse>(body: ITransmissionRequest) {
+        if (!this._sessionId) {
+            console.log('Preparing session id');
+            await this.prepareSessionId();
+        }
+        const headers = this.createHeaders();
+
+        return axios
+            .post<any, AxiosResponse<T>>(
+                this._requestUrl, body, {headers})
+            .then(result => result.data);
+    }
+
+    public getTorrents() {
+        const body: ITransmissionTorrentAccessorRequest = {
+            method: "torrent-get",
+            arguments: {
+                fields: ['id', 'name']
+            }
+        }
+        return this.call<ITransmissionTorrentAccessorResponse>(body);
+    }
+}
