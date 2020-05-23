@@ -1,5 +1,5 @@
 import {
-    INewTorrentRequest,
+    INewTorrentRequest, ITransmissionFreeSpaceRequest, ITransmissionFreeSpaceResponse,
     ITransmissionRequest,
     ITransmissionResponse,
     ITransmissionTorrentAccessorRequest,
@@ -102,5 +102,15 @@ export class Transmission {
             }
         }
         return this.call<ITransmissionTorrentAddResponse>(body);
+    }
+
+    public getFreeSpace(path: string) {
+        const body: ITransmissionFreeSpaceRequest = {
+            method: 'free-space',
+            arguments: {
+                path
+            }
+        }
+        return this.call<ITransmissionFreeSpaceResponse>(body);
     }
 }

@@ -94,3 +94,17 @@ export interface ITransmissionTorrentAddResponse extends ITransmissionResponse {
         }
     }
 }
+
+export interface ITransmissionFreeSpaceRequest extends ITransmissionRequest {
+    method: 'free-space',
+    arguments: {
+        path: string;
+    }
+}
+
+export interface ITransmissionFreeSpaceResponse extends ITransmissionResponse {
+    arguments: {
+        path: string;
+        'size-bytes': number;
+    }
+}
