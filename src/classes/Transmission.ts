@@ -1,7 +1,11 @@
 import {
+    INewTorrentRequest,
     ITransmissionRequest,
     ITransmissionResponse,
-    ITransmissionTorrentAccessorRequest, ITransmissionTorrentAccessorResponse,
+    ITransmissionTorrentAccessorRequest,
+    ITransmissionTorrentAccessorResponse,
+    ITransmissionTorrentAddRequest,
+    ITransmissionTorrentAddResponse,
     TransmissionOptions
 } from "../types/Transmission";
 import axios, {AxiosResponse} from 'axios';
@@ -85,5 +89,18 @@ export class Transmission {
             }
         }
         return this.call<ITransmissionTorrentAccessorResponse>(body);
+    }
+
+    public addTorrent(request: INewTorrentRequest) {
+        const { autostart, downloadDir, magnet } = request;
+        const body: ITransmissionTorrentAddRequest = {
+            method: 'torrent-add',
+            arguments: {
+                filename: magnet,
+                paused: !autostart,
+                "download-dir": downloadDir,
+            }
+        }
+        return this.call<ITransmissionTorrentAddResponse>(body);
     }
 }

@@ -13,6 +13,12 @@ export interface Transmission {
     savePath: string;
 }
 
+export interface INewTorrentRequest {
+    magnet: string;
+    autostart: boolean;
+    downloadDir: string;
+}
+
 export interface TransmissionOptions {
     host: string;
     port: number;
@@ -53,5 +59,38 @@ export interface ITransmissionTorrentAccessorRequest extends ITransmissionReques
 export interface ITransmissionTorrentAccessorResponse extends ITransmissionResponse {
     arguments: {
         torrents: [{}];
+    }
+}
+
+export interface ITransmissionTorrentAddRequest extends ITransmissionRequest{
+    method: 'torrent-add',
+    arguments: {
+        cookies?: string;
+        'download-dir'?: string;
+        filename: string;
+        metainfo?: string;
+        paused?: boolean;
+        'peer-limit'?: number;
+        bandwidthPriority?: number;
+        'files-wanted'?: [];
+        'files-unwanted'?: [];
+        'priorities-high'?: [];
+        'priorities-medium'?: [];
+        'priorities-low'?: [];
+    }
+}
+
+export interface ITransmissionTorrentAddResponse extends ITransmissionResponse {
+    arguments: {
+        'torrent-added'?: {
+            id: number;
+            name: string;
+            hashString: string;
+        }
+        'torrent-duplicate'?: {
+            id: number;
+            name: string;
+            hashString: string;
+        }
     }
 }
