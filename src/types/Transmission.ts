@@ -19,6 +19,11 @@ export interface INewTorrentRequest {
     downloadDir: string;
 }
 
+export interface IRemoveTorrentRequest {
+    ids: number[];
+    deleteLocalData: boolean;
+}
+
 export interface TransmissionOptions {
     host: string;
     port: number;
@@ -38,7 +43,7 @@ export interface ITransmissionRequest {
 
 export interface ITransmissionResponse {
     result: string;
-    arguments: {
+    arguments?: {
         [key: string]: any;
     }
     tag?: string;
@@ -107,4 +112,20 @@ export interface ITransmissionFreeSpaceResponse extends ITransmissionResponse {
         path: string;
         'size-bytes': number;
     }
+}
+
+export interface ITransmissionTorrentActionsRequest extends ITransmissionRequest{
+    method: 'torrent-start' | 'torrent-start-now' | 'torrent-stop' | 'torrent-verify' | 'torrent-reannounce',
+    arguments: {
+        ids?: 'recently-active' | number | number[] | string[];
+    }
+}
+
+export interface ITransmissionTorrentRemoveRequest extends ITransmissionRequest {
+    method: 'torrent-remove',
+    arguments: {
+        ids: number[] | string[];
+        'delete-local-data': boolean;
+    }
+
 }

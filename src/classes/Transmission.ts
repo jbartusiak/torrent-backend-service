@@ -3,9 +3,9 @@ import {
     ITransmissionRequest,
     ITransmissionResponse,
     ITransmissionTorrentAccessorRequest,
-    ITransmissionTorrentAccessorResponse,
+    ITransmissionTorrentAccessorResponse, ITransmissionTorrentActionsRequest,
     ITransmissionTorrentAddRequest,
-    ITransmissionTorrentAddResponse,
+    ITransmissionTorrentAddResponse, ITransmissionTorrentRemoveRequest,
     TransmissionOptions
 } from "../types/Transmission";
 import axios, {AxiosResponse} from 'axios';
@@ -99,6 +99,18 @@ export class Transmission {
         return this.call<ITransmissionTorrentAddResponse>(body);
     }
 
+    public removeTorrent(ids: number[], trashLocalData: boolean) {
+        const body: ITransmissionTorrentRemoveRequest = {
+            method: 'torrent-remove',
+            arguments: {
+                ids,
+                "delete-local-data": trashLocalData,
+            }
+        }
+
+        return this.call<ITransmissionResponse>(body);
+    }
+
     public getFreeSpace(path: string) {
         const body: ITransmissionFreeSpaceRequest = {
             method: 'free-space',
@@ -107,5 +119,25 @@ export class Transmission {
             }
         }
         return this.call<ITransmissionFreeSpaceResponse>(body);
+    }
+
+    public startTorrent(ids: number[]){
+        const body: ITransmissionTorrentActionsRequest = {
+            method: 'torrent-start',
+            arguments: {
+                ids
+            }
+        }
+        return this.call<ITransmissionResponse>(body);
+    }
+
+    public stopTorrent(ids: number[]) {
+        const body: ITransmissionTorrentActionsRequest = {
+            method: 'torrent-stop',
+            arguments: {
+                ids
+            }
+        }
+        return this.call<ITransmissionResponse>(body);
     }
 }

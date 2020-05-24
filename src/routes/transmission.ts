@@ -2,8 +2,8 @@ import {Request, Router} from "express";
 import {OK} from "../types/Response";
 import {Transmission} from "../classes/Transmission";
 import {
-    INewTorrentRequest,
-    ITransmissionFreeSpaceResponse,
+    INewTorrentRequest, IRemoveTorrentRequest,
+    ITransmissionFreeSpaceResponse, ITransmissionResponse,
     ITransmissionTorrentAddResponse
 } from "../types/Transmission";
 
@@ -34,18 +34,53 @@ transmissionRouter.post('/transmission/new', (req: Request<{}, ITransmissionTorr
         });
 })
 
+transmissionRouter.post('/transmission/remove',
+    (req: Request<{}, ITransmissionResponse, IRemoveTorrentRequest>, res) => {
+        const {ids, deleteLocalData} = req.body;
+        transmission
+            .removeTorrent(ids, deleteLocalData)
+            .then(response => {
+                OK(res, {response: response.result})
+            });
+    });
+
 transmissionRouter.post('/transmission/space',
     (req: Request<{}, ITransmissionFreeSpaceResponse, { path: string }>, res) => {
-    transmission
-        .getFreeSpace(req.body.path)
-        .then(response => {
-            OK(res, {
-                response: {
-                    path: response.arguments.path,
-                    free: `${Math.round(response.arguments["size-bytes"]/1073741824)} GB`
-                }
+        transmission
+            .getFreeSpace(req.body.path)
+            .then(response => {
+                OK(res, {
+                    response: {
+                        path: response.arguments.path,
+                        free: `${Math.round(response.arguments["size-bytes"] / 1073741824)} GB`
+                    }
+                })
             })
-        })
-});
+    });
+
+transmissionRouter.post('/transmission/start/:id',
+    (req, res) => {
+        const id = req.params['id'];
+        transmission
+            .startTorrent([Number.parseInt(id, 10)])
+            .then(response => {
+                OK(res, {
+                    response: response.result
+                })
+            })
+    });
+
+transmissionRouter.post('/transmission/stop/:id',
+    (req, res) => {
+        const id = req.params['id'];
+        transmission
+            .stopTorrent([Number.parseInt(id, 10)])
+            .then(response => {
+                OK(res, {
+                    response: response.result
+                })
+            })
+    });
+
 
 export default transmissionRouter;
