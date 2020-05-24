@@ -1,12 +1,17 @@
 import {
-    INewTorrentRequest, ITransmissionFreeSpaceRequest, ITransmissionFreeSpaceResponse,
+    INewTorrentRequest,
+    ITransmissionFreeSpaceRequest,
+    ITransmissionFreeSpaceResponse,
     ITransmissionRequest,
     ITransmissionResponse,
     ITransmissionTorrentAccessorRequest,
-    ITransmissionTorrentAccessorResponse, ITransmissionTorrentActionsRequest,
+    ITransmissionTorrentAccessorResponse,
+    ITransmissionTorrentActionsRequest,
     ITransmissionTorrentAddRequest,
-    ITransmissionTorrentAddResponse, ITransmissionTorrentRemoveRequest,
-    TransmissionOptions
+    ITransmissionTorrentAddResponse,
+    ITransmissionTorrentRemoveRequest,
+    TransmissionOptions,
+    TTorrentAccessorFields
 } from "../types/Transmission";
 import axios, {AxiosResponse} from 'axios';
 
@@ -18,6 +23,9 @@ const transmisionOptions: TransmissionOptions = {
     ssl: false,
     url: 'transmission/rpc'
 };
+
+const minimumTorrentAttributes: TTorrentAccessorFields[] =
+    ['id', 'name', 'rateDownload', "rateUpload", 'status', 'totalSize', 'eta', 'peersConnected', 'peersSendingToUs', 'downloadDir'];
 
 export const mapTorrentToSimple = (torrents: any[]) => {
     return torrents.map(torrent => ({
@@ -76,18 +84,22 @@ export class Transmission {
             .then(result => result.data);
     }
 
-    public getTorrents() {
+    public getTorrents(ids?: number[] | string[], extraAccessors?: TTorrentAccessorFields[]) {
+        const fields: TTorrentAccessorFields[] = [...minimumTorrentAttributes];
+
+        if (extraAccessors) fields.push(...extraAccessors);
+
         const body: ITransmissionTorrentAccessorRequest = {
             method: "torrent-get",
             arguments: {
-                fields: ['id', 'name']
+                fields
             }
         }
         return this.call<ITransmissionTorrentAccessorResponse>(body);
     }
 
     public addTorrent(request: INewTorrentRequest) {
-        const { autostart, downloadDir, magnet } = request;
+        const {autostart, downloadDir, magnet} = request;
         const body: ITransmissionTorrentAddRequest = {
             method: 'torrent-add',
             arguments: {
@@ -121,7 +133,7 @@ export class Transmission {
         return this.call<ITransmissionFreeSpaceResponse>(body);
     }
 
-    public startTorrent(ids: number[]){
+    public startTorrent(ids: number[]) {
         const body: ITransmissionTorrentActionsRequest = {
             method: 'torrent-start',
             arguments: {

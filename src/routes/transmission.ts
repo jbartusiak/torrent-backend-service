@@ -2,6 +2,7 @@ import {Request, Router} from "express";
 import {OK} from "../types/Response";
 import {Transmission} from "../classes/Transmission";
 import {
+    IGetTorrentsRequest,
     INewTorrentRequest, IRemoveTorrentRequest,
     ITransmissionFreeSpaceResponse, ITransmissionResponse,
     ITransmissionTorrentAddResponse
@@ -22,11 +23,23 @@ transmissionRouter.get('/transmission/active', (req, res) => {
         });
 });
 
+transmissionRouter.post('/transmission/get', (
+    req: Request<{}, ITransmissionResponse, IGetTorrentsRequest>, res) => {
+    transmission
+        .getTorrents(req.body.ids, req.body.extraAccessors)
+        .then(response => {
+            OK(res, {torrents: [...response.arguments.torrents]})
+        })
+})
+
 transmissionRouter.post('/transmission/new', (req: Request<{}, ITransmissionTorrentAddResponse, INewTorrentRequest>, res) => {
     transmission
         .addTorrent(req.body)
         .then(response => {
-            OK(res, {response: response.arguments["torrent-added"] || response.arguments["torrent-duplicate"]})
+            OK(res, {
+                duplicate: !!response.arguments['torrent-duplicate'],
+                response: response.arguments["torrent-added"] || response.arguments["torrent-duplicate"]
+            })
         })
         .catch(err => {
             console.log(err.message);

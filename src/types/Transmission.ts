@@ -24,6 +24,11 @@ export interface IRemoveTorrentRequest {
     deleteLocalData: boolean;
 }
 
+export interface IGetTorrentsRequest {
+    ids: number[] | string[];
+    extraAccessors?: TTorrentAccessorFields[];
+}
+
 export interface TransmissionOptions {
     host: string;
     port: number;
@@ -49,7 +54,7 @@ export interface ITransmissionResponse {
     tag?: string;
 }
 
-export type TTorrentAccessorFields = 'activityDate' | 'addedDate' | 'bandwidthPriority' | 'comment' | 'corruptEver' | 'creator' | 'dateCreated' | 'desiredAvailable' | 'doneDate' | 'downloadDir' | 'downloadedEver' | 'downloadLimit' | 'downloadLimited' | 'editDate' | 'error' | 'errorString' | 'eta' | 'etaIdle' | 'files' | 'fileStats' | 'hashString' | 'haveUnchecked' | 'haveValid' | 'honorsSessionLimits' | 'id' | 'isFinished' | 'isPrivate' | 'isStalled' | 'labels' | 'leftUntilDone' | 'magnetLink' | 'manualAnnounceTime' | 'maxConnectedPeers' | 'metadataPercentComplete' | 'name' | 'peer-limit' | 'peers' | 'peersConnected' | 'peersFrom' | 'peersGettingFromUs' | 'peersSendingToUs' | 'percentDone' | 'pieces' | 'pieceCount' | 'pieceSize' | 'priorities' | 'queuePosition' | 'rateDownload (B/s)' | 'rateUpload (B/s)' | 'recheckProgress' | 'secondsDownloading' | 'secondsSeeding' | 'seedIdleLimit' | 'seedIdleMode' | 'seedRatioLimit' | 'seedRatioMode' | 'sizeWhenDone' | 'startDate' | 'status' | 'trackers' | 'trackerStats' | 'totalSize' | 'torrentFile' | 'uploadedEver' | 'uploadLimit' | 'uploadLimited' | 'uploadRatio' | 'wanted' | 'webseeds' | 'webseedsSendingToUs';
+export type TTorrentAccessorFields = 'activityDate' | 'addedDate' | 'bandwidthPriority' | 'comment' | 'corruptEver' | 'creator' | 'dateCreated' | 'desiredAvailable' | 'doneDate' | 'downloadDir' | 'downloadedEver' | 'downloadLimit' | 'downloadLimited' | 'editDate' | 'error' | 'errorString' | 'eta' | 'etaIdle' | 'files' | 'fileStats' | 'hashString' | 'haveUnchecked' | 'haveValid' | 'honorsSessionLimits' | 'id' | 'isFinished' | 'isPrivate' | 'isStalled' | 'labels' | 'leftUntilDone' | 'magnetLink' | 'manualAnnounceTime' | 'maxConnectedPeers' | 'metadataPercentComplete' | 'name' | 'peer-limit' | 'peers' | 'peersConnected' | 'peersFrom' | 'peersGettingFromUs' | 'peersSendingToUs' | 'percentDone' | 'pieces' | 'pieceCount' | 'pieceSize' | 'priorities' | 'queuePosition' | 'rateDownload' | 'rateUpload' | 'recheckProgress' | 'secondsDownloading' | 'secondsSeeding' | 'seedIdleLimit' | 'seedIdleMode' | 'seedRatioLimit' | 'seedRatioMode' | 'sizeWhenDone' | 'startDate' | 'status' | 'trackers' | 'trackerStats' | 'totalSize' | 'torrentFile' | 'uploadedEver' | 'uploadLimit' | 'uploadLimited' | 'uploadRatio' | 'wanted' | 'webseeds' | 'webseedsSendingToUs';
 export type TTorrentAccessorFile = 'bytesCompleted' | 'length' | 'name';
 
 export interface ITransmissionTorrentAccessorRequest extends ITransmissionRequest {
