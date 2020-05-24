@@ -72,10 +72,7 @@ export class Transmission {
     }
 
     private async call<T extends ITransmissionResponse>(body: ITransmissionRequest) {
-        if (!this._sessionId) {
-            console.log('Preparing session id');
-            await this.prepareSessionId();
-        }
+        await this.prepareSessionId();
         const headers = this.createHeaders();
 
         return axios
