@@ -25,7 +25,7 @@ const transmisionOptions: TransmissionOptions = {
 };
 
 const minimumTorrentAttributes: TTorrentAccessorFields[] =
-    ['id', 'name', 'rateDownload', "rateUpload", 'status', 'totalSize', 'eta', 'peersConnected', 'peersSendingToUs', 'downloadDir'];
+    ['id', 'name', 'rateDownload', "rateUpload", 'status', 'totalSize', 'eta', 'peersConnected', 'peersSendingToUs', 'downloadDir', 'percentDone', 'downloadedEver'];
 
 export const mapTorrentToSimple = (torrents: any[]) => {
     return torrents.map(torrent => ({
