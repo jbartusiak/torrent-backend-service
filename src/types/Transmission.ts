@@ -56,6 +56,7 @@ export interface ITransmissionResponse {
 
 export type TTorrentAccessorFields = 'activityDate' | 'addedDate' | 'bandwidthPriority' | 'comment' | 'corruptEver' | 'creator' | 'dateCreated' | 'desiredAvailable' | 'doneDate' | 'downloadDir' | 'downloadedEver' | 'downloadLimit' | 'downloadLimited' | 'editDate' | 'error' | 'errorString' | 'eta' | 'etaIdle' | 'files' | 'fileStats' | 'hashString' | 'haveUnchecked' | 'haveValid' | 'honorsSessionLimits' | 'id' | 'isFinished' | 'isPrivate' | 'isStalled' | 'labels' | 'leftUntilDone' | 'magnetLink' | 'manualAnnounceTime' | 'maxConnectedPeers' | 'metadataPercentComplete' | 'name' | 'peer-limit' | 'peers' | 'peersConnected' | 'peersFrom' | 'peersGettingFromUs' | 'peersSendingToUs' | 'percentDone' | 'pieces' | 'pieceCount' | 'pieceSize' | 'priorities' | 'queuePosition' | 'rateDownload' | 'rateUpload' | 'recheckProgress' | 'secondsDownloading' | 'secondsSeeding' | 'seedIdleLimit' | 'seedIdleMode' | 'seedRatioLimit' | 'seedRatioMode' | 'sizeWhenDone' | 'startDate' | 'status' | 'trackers' | 'trackerStats' | 'totalSize' | 'torrentFile' | 'uploadedEver' | 'uploadLimit' | 'uploadLimited' | 'uploadRatio' | 'wanted' | 'webseeds' | 'webseedsSendingToUs';
 export type TTorrentAccessorFile = 'bytesCompleted' | 'length' | 'name';
+export type TTorrentMutatorsFields = 'bandwidthPriority' | 'downloadLimit' | 'downloadLimited' | 'files-wanted' | 'files-unwanted' | 'honorsSessionLimits' | 'ids' | 'labels' | 'location' | 'peer-limit' | 'priority-high' | 'priority-low' | 'priority-normal' | 'queuePosition' | 'seedIdleLimit' | 'seedIdleMode' | 'seedRatioLimit' | 'seedRatioMode' | 'trackerAdd' | 'trackerRemove' | 'trackerReplace' | 'uploadLimit' | 'uploadLimited';
 
 export interface ITransmissionTorrentAccessorRequest extends ITransmissionRequest {
     method: 'torrent-get',
@@ -132,5 +133,15 @@ export interface ITransmissionTorrentRemoveRequest extends ITransmissionRequest 
         ids: number[] | string[];
         'delete-local-data': boolean;
     }
+}
 
+export interface ITransmissionTorrentMutateRequest extends ITransmissionRequest {
+    method: 'torrent-set',
+    arguments: {
+        [name: string]: any;
+    }
+}
+
+export interface ITransmissionTorrentMutateResponse extends ITransmissionResponse {
+    arguments: undefined;
 }

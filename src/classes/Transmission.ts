@@ -8,7 +8,7 @@ import {
     ITransmissionTorrentAccessorResponse,
     ITransmissionTorrentActionsRequest,
     ITransmissionTorrentAddRequest,
-    ITransmissionTorrentAddResponse,
+    ITransmissionTorrentAddResponse, ITransmissionTorrentMutateRequest,
     ITransmissionTorrentRemoveRequest,
     TransmissionOptions,
     TTorrentAccessorFields
@@ -134,6 +134,15 @@ export class Transmission {
                 ids
             }
         }
+        return this.call<ITransmissionResponse>(body);
+    }
+
+    public changeTorrent(args: { [key: string]: any }) {
+        const body: ITransmissionTorrentMutateRequest = {
+            method: 'torrent-set',
+            arguments: {...args},
+        };
+
         return this.call<ITransmissionResponse>(body);
     }
 }

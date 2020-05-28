@@ -5,7 +5,7 @@ import {
     IGetTorrentsRequest,
     INewTorrentRequest, IRemoveTorrentRequest,
     ITransmissionFreeSpaceResponse, ITransmissionResponse,
-    ITransmissionTorrentAddResponse
+    ITransmissionTorrentAddResponse, ITransmissionTorrentMutateResponse
 } from "../types/Transmission";
 
 const transmissionRouter = Router();
@@ -95,5 +95,15 @@ transmissionRouter.post('/transmission/stop/:id',
             })
     });
 
+transmissionRouter.post('/transmission/set',
+    (req: Request<{}, ITransmissionTorrentMutateResponse, {[key: string]: any}>, res) => {
+        transmission
+            .changeTorrent(req.body)
+            .then(response => {
+                OK(res, {
+                    response: response.result
+                })
+            });
+    })
 
 export default transmissionRouter;
