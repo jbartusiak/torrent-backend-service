@@ -71,11 +71,10 @@ transmissionRouter.post('/transmission/space',
             })
     });
 
-transmissionRouter.post('/transmission/start/:id',
+transmissionRouter.post('/transmission/start',
     (req, res) => {
-        const id = req.params['id'];
         transmission
-            .startTorrent([Number.parseInt(id, 10)])
+            .startTorrent(req.body.ids)
             .then(response => {
                 OK(res, {
                     response: response.result
@@ -83,11 +82,10 @@ transmissionRouter.post('/transmission/start/:id',
             })
     });
 
-transmissionRouter.post('/transmission/stop/:id',
+transmissionRouter.post('/transmission/stop',
     (req, res) => {
-        const id = req.params['id'];
         transmission
-            .stopTorrent([Number.parseInt(id, 10)])
+            .stopTorrent(req.body.ids)
             .then(response => {
                 OK(res, {
                     response: response.result
