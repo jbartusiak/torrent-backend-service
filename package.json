@@ -10,7 +10,7 @@
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc"
   },
-  "author": "Jakub Bartusiak",
+  "author": "jakub.bartusiak",
   "license": "ISC",
   "bundledDependencies": [
     "cors",
