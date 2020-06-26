@@ -1,7 +1,8 @@
 {
   "name": "torrent-backend-service",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
+  "types": "src/types",
   "main": "src/index.ts",
   "homepage": "https://github.com/jbartusiak/torrent-backend-service",
   "repository": {
