@@ -1,8 +1,7 @@
 {
   "name": "torrent-backend-service",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "description": "",
-  "types": "src/types",
   "main": "src/index.ts",
   "homepage": "https://github.com/jbartusiak/torrent-backend-service",
   "repository": {
@@ -10,7 +9,7 @@
     "url": "https://github.com/jbartusiak/torrent-backend-service"
   },
   "scripts": {
-    "start": "npm run build && node dist/bundle.js",
+    "start": "npm run build && node build/index.js",
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc"
   },
