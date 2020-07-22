@@ -13,3 +13,7 @@ export const configureDefaultProviders = () => {
     });
     console.log('Provider configuration done!');
 }
+
+export const getConfigByKey = (key: string): string => {
+    return process.env[key] || '';
+}
