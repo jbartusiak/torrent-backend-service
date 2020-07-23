@@ -1,5 +1,5 @@
 import {Request, Router} from "express";
-import {OK} from "../types/Response";
+import { BadRequest, OK } from "../types/Response";
 import {Transmission} from "../classes/Transmission";
 import {
     IGetTorrentsRequest,
@@ -22,6 +22,22 @@ transmissionRouter.get('/transmission/active', (req, res) => {
             res.send(err.message)
         });
 });
+
+transmissionRouter.get('/transmission/all', (req, res) => {
+    // @ts-ignore
+    const id: string = req.query.id;
+    if (!id) return BadRequest(res, 'No id param provided');
+
+    transmission
+        .getAllTorrents(Number.parseInt(id))
+        .then(response => {
+            OK(res, {torrents: response.arguments.torrents})
+        })
+        .catch(err => {
+            console.error(err.message);
+            res.send(err.message);
+        })
+})
 
 transmissionRouter.post('/transmission/get', (
     req: Request<{}, ITransmissionResponse, IGetTorrentsRequest>, res) => {

@@ -24,6 +24,9 @@ const transmisionOptions: TransmissionOptions = {
     url: 'transmission/rpc'
 };
 
+const allTorrentAttributes: TTorrentAccessorFields[] =
+    ['activityDate', 'addedDate', 'bandwidthPriority', 'comment', 'corruptEver', 'creator', 'dateCreated', 'desiredAvailable', 'doneDate', 'downloadDir', 'downloadedEver', 'downloadLimit', 'downloadLimited', 'editDate', 'error', 'errorString', 'eta', 'etaIdle', 'files', 'fileStats', 'hashString', 'haveUnchecked', 'haveValid', 'honorsSessionLimits', 'id', 'isFinished', 'isPrivate', 'isStalled', 'labels', 'leftUntilDone', 'magnetLink', 'manualAnnounceTime', 'maxConnectedPeers', 'metadataPercentComplete', 'name', 'peer-limit', 'peers', 'peersConnected', 'peersFrom', 'peersGettingFromUs', 'peersSendingToUs', 'percentDone', 'pieceCount', 'pieceSize', 'priorities', 'queuePosition', 'rateDownload', 'rateUpload', 'recheckProgress', 'secondsDownloading', 'secondsSeeding', 'seedIdleLimit', 'seedIdleMode', 'seedRatioLimit', 'seedRatioMode', 'sizeWhenDone', 'startDate', 'status', 'totalSize', 'torrentFile', 'uploadedEver', 'uploadLimit', 'uploadLimited', 'uploadRatio', 'wanted', 'webseeds', 'webseedsSendingToUs'];
+
 const minimumTorrentAttributes: TTorrentAccessorFields[] =
     ['id', 'name', 'rateDownload', "rateUpload", 'status', 'totalSize', 'eta', 'labels', 'peersConnected', 'peersSendingToUs', 'downloadDir', 'percentDone', 'downloadedEver'];
 
@@ -66,6 +69,17 @@ export class Transmission {
             .post<any, AxiosResponse<T>>(
                 this._requestUrl, body, {headers})
             .then(result => result.data);
+    }
+
+    public getAllTorrents(id: number) {
+        const body: ITransmissionTorrentAccessorRequest = {
+            method: 'torrent-get',
+            arguments: {
+                ids: id,
+                fields: allTorrentAttributes
+            }
+        }
+        return this.call<ITransmissionTorrentAccessorResponse>(body);
     }
 
     public getTorrents(ids?: number[] | string[], extraAccessors?: TTorrentAccessorFields[]) {
