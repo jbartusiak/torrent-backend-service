@@ -16,7 +16,7 @@ import {
 import axios, {AxiosResponse} from 'axios';
 
 const transmisionOptions: TransmissionOptions = {
-    host: '192.168.0.254',
+    host: process.env.SERVER_HOST || 'localhost',
     port: 9091,
     username: 'transmission',
     password: 'torrent',

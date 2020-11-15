@@ -6,7 +6,7 @@ const eurekaClient = new Eureka({
     instance: {
         app: 'torrent-backend-service',
         hostName: 'localhost',
-        ipAddr: '127.0.0.1',
+        ipAddr: process.env.SERVER_HOST || 'localhost',
         port: {
             '$': 3000,
             '@enabled': true,
@@ -19,7 +19,7 @@ const eurekaClient = new Eureka({
     },
     eureka: {
         // eureka server host / port
-        host: '192.168.0.254',
+        host: process.env.SERVER_HOST || 'localhost',
         port: 8888,
         servicePath: '/eureka/apps',
     },
