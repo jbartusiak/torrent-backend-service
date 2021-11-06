@@ -1,9 +1,9 @@
 FROM alpine:latest AS builder
-RUN apk add --update nodejs yarn
+RUN apk add --update nodejs npm
 WORKDIR /app
 COPY . .
-RUN yarn install
-RUN yarn run build
+RUN npm install
+RUN npm run build
 
 FROM alpine:latest AS runner
 RUN apk add --update nodejs
