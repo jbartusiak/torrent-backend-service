@@ -1,10 +1,10 @@
-FROM node:17-slim AS builder
+FROM node:14-slim AS builder
 WORKDIR /app
 COPY . .
 RUN yarn install
 RUN yarn run build
 
-FROM node:17-slim AS runner
+FROM node:14-slim AS runner
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
