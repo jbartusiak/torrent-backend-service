@@ -1,13 +1,10 @@
-FROM alpine:latest AS builder
-RUN apk update
-RUN apk add nodejs yarn
+FROM node:14-alpine AS builder
 WORKDIR /app
 COPY . .
 RUN yarn install
 RUN yarn run build
 
-FROM alpine:latest AS runner
-RUN apk add --update nodejs
+FROM node:14-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
