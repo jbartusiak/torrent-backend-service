@@ -7,6 +7,7 @@ import {
     ITransmissionFreeSpaceResponse, ITransmissionResponse,
     ITransmissionTorrentAddResponse, ITransmissionTorrentMutateResponse
 } from "../types/Transmission";
+import {chalkError} from "../logger";
 
 const transmissionRouter = Router();
 const transmission = new Transmission();
@@ -18,7 +19,7 @@ transmissionRouter.get('/transmission/active', (req, res) => {
             OK((res), {torrents: response.arguments.torrents})
         })
         .catch(err => {
-            console.error(err.message)
+            chalkError(err.message)
             res.send(err.message)
         });
 });
@@ -34,7 +35,7 @@ transmissionRouter.get('/transmission/all', (req, res) => {
             OK(res, {torrents: response.arguments.torrents})
         })
         .catch(err => {
-            console.error(err.message);
+            chalkError(err.message);
             res.send(err.message);
         })
 })
@@ -58,7 +59,7 @@ transmissionRouter.post('/transmission/new', (req: Request<{}, ITransmissionTorr
             })
         })
         .catch(err => {
-            console.log(err.message);
+            chalkError(err.message);
             res.send(err.message);
         });
 })

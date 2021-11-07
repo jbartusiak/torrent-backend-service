@@ -14,6 +14,7 @@ import {
     TTorrentAccessorFields
 } from "../types/Transmission";
 import axios, {AxiosResponse} from 'axios';
+import {chalkLog} from "../logger";
 
 const transmisionOptions: TransmissionOptions = {
     host: process.env.SERVER_HOST || 'localhost',
@@ -56,7 +57,7 @@ export class Transmission {
                 if (error.response && error.response.status === 409) {
                     const {response} = error;
                     this._sessionId = response.headers['x-transmission-session-id']
-                    console.log(`Session id set to: ${this._sessionId}`);
+                    chalkLog(`Session id set to: ${this._sessionId}`);
                 }
             });
     }
