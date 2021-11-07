@@ -1,1 +1,1 @@
-docker buildx build --platform=linux/amd64,linux/arm/v7,linux/arm64 -t satanicus1991/torrent-backend-service:1.1.2 -t satanicus1991/torrent-backend-service:latest --push .
+docker buildx build --platform=linux/amd64,linux/arm/v7,linux/arm64 -t satanicus1991/torrent-backend-service:1.2.0 -t satanicus1991/torrent-backend-service:latest --push .
