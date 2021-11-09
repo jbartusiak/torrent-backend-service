@@ -14,14 +14,25 @@ import {
     TTorrentAccessorFields
 } from "../types/Transmission";
 import axios, {AxiosResponse} from 'axios';
+import {chalkError, chalkLog} from "../logger";
+import chalk from "chalk";
 
-const transmisionOptions: TransmissionOptions = {
-    host: process.env.SERVER_HOST || 'localhost',
-    port: 9091,
-    username: 'transmission',
-    password: 'torrent',
-    ssl: false,
-    url: 'transmission/rpc'
+const transmissionOptions: () => TransmissionOptions = () => {
+    var options = {
+        host: process.env.SERVER_HOST || 'localhost',
+        port: Number.parseInt(process.env.SERVER_PORT || '9091'),
+        username: process.env.SERVER_USERNAME || 'transmission',
+        password: process.env.SERVER_PASSWORD || 'torrent',
+        ssl: false,
+        url: 'transmission/rpc',
+    };
+
+    chalkLog('Initializing transmission class with following properties: ');
+    Object.entries(options).forEach(([key, value]) => {
+        chalkLog(`${key}: ${value}`);
+    });
+
+    return options;
 };
 
 const allTorrentAttributes: TTorrentAccessorFields[] =
@@ -34,13 +45,13 @@ export class Transmission {
     private _requestUrl: string;
     private _sessionId: string;
 
-    constructor(options: TransmissionOptions = transmisionOptions) {
+    constructor(private options: TransmissionOptions = transmissionOptions()) {
         this._requestUrl = `http://${options.host}:${options.port}/${options.url}`;
         this._sessionId = '';
     }
 
     private createHeaders() {
-        const token = Buffer.from(`${transmisionOptions.username}:${transmisionOptions.password}`).toString('base64');
+        const token = Buffer.from(`${this.options.username}:${this.options.password}`).toString('base64');
 
         return {
             Authorization: `Basic ${token}`,
@@ -56,7 +67,7 @@ export class Transmission {
                 if (error.response && error.response.status === 409) {
                     const {response} = error;
                     this._sessionId = response.headers['x-transmission-session-id']
-                    console.log(`Session id set to: ${this._sessionId}`);
+                    chalkLog(`Session id set to: ${this._sessionId}`);
                 }
             });
     }
@@ -65,10 +76,28 @@ export class Transmission {
         await this.prepareSessionId();
         const headers = this.createHeaders();
 
+        this.logInteraction(`POST ${this._requestUrl}\tmethod: ${body.method} ; ` +
+            `headers: ${JSON.stringify(headers)}; args: ${JSON.stringify(body.arguments)}`);
+
         return axios
             .post<any, AxiosResponse<T>>(
                 this._requestUrl, body, {headers})
-            .then(result => result.data);
+            .then(result => {
+                if (result.status === 200 || result.status === 304) {
+                    this.logInteraction(`RESPONSE ${result.status} POST ${this._requestUrl}\tmethod: ${body.method} ;`)
+                } else {
+                    this.logInteraction(`ErrorResponse ${result.status} POST ${this._requestUrl} ; method: ${body.method} ;`, true)
+                }
+                return result.data
+            });
+    }
+
+    private logInteraction(text: string, error = false) {
+        if (error) {
+            chalkError(chalk.red('[Transmission/RPC]\t') + text)
+        } else {
+            chalkLog(chalk.green('[Transmission/RPC]\t') + text);
+        }
     }
 
     public getAllTorrents(id: number) {
