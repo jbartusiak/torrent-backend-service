@@ -10,7 +10,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/.env .
+COPY --from=builder /app/docker-entrypoint.sh .
 
-CMD ["node", "build/index.js"]
+ENTRYPOINT ["/bin/sh", "docker-entrypoint.sh"]
 
 EXPOSE 3001

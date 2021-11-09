@@ -16,13 +16,22 @@ import {
 import axios, {AxiosResponse} from 'axios';
 import {chalkLog} from "../logger";
 
-const transmisionOptions: TransmissionOptions = {
-    host: process.env.SERVER_HOST || 'localhost',
-    port: 9091,
-    username: 'transmission',
-    password: 'torrent',
-    ssl: false,
-    url: 'transmission/rpc'
+const transmissionOptions: () => TransmissionOptions = () => {
+    var options = {
+        host: process.env.SERVER_HOST || 'localhost',
+        port: Number.parseInt(process.env.SERVER_PORT || '9091') ,
+        username: process.env.SERVER_USERNAME || 'transmission',
+        password: process.env.SERVER_PASSWORD || 'torrent',
+        ssl: false,
+        url: 'transmission/rpc',
+    };
+
+    chalkLog('Initializing transmission class with following properties: ');
+    Object.entries(options).forEach(([key, value]) => {
+        chalkLog(`${key}: ${value}`);
+    });
+
+    return options;
 };
 
 const allTorrentAttributes: TTorrentAccessorFields[] =
@@ -35,13 +44,13 @@ export class Transmission {
     private _requestUrl: string;
     private _sessionId: string;
 
-    constructor(options: TransmissionOptions = transmisionOptions) {
+    constructor(private options: TransmissionOptions = transmissionOptions()) {
         this._requestUrl = `http://${options.host}:${options.port}/${options.url}`;
         this._sessionId = '';
     }
 
     private createHeaders() {
-        const token = Buffer.from(`${transmisionOptions.username}:${transmisionOptions.password}`).toString('base64');
+        const token = Buffer.from(`${this.options.username}:${this.options.password}`).toString('base64');
 
         return {
             Authorization: `Basic ${token}`,
@@ -65,6 +74,8 @@ export class Transmission {
     private async call<T extends ITransmissionResponse>(body: ITransmissionRequest) {
         await this.prepareSessionId();
         const headers = this.createHeaders();
+
+        chalkLog(`Calling transmission on ${this._requestUrl} with body: ${JSON.stringify(body)}`);
 
         return axios
             .post<any, AxiosResponse<T>>(

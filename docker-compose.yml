@@ -6,4 +6,9 @@ services:
     image: satanicus1991/torrent-backend-service:latest
     ports:
       - "3001:3001/tcp"
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_HOST=${SERVER_HOST}
+      - SERVER_USERNAME=${SERVER_USERNAME}
+      - SERVER_PASSWORD=${SERVER_PASSWORD}
     restart: unless-stopped
