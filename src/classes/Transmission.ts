@@ -75,7 +75,7 @@ export class Transmission {
         await this.prepareSessionId();
         const headers = this.createHeaders();
 
-        chalkLog(`Calling transmission on ${this._requestUrl} with body: ${JSON.stringify(body)}`);
+        chalkLog(`Calling transmission on ${this._requestUrl} with body: ${JSON.stringify(body)} and headers: ${JSON.stringify(headers)}`);
 
         return axios
             .post<any, AxiosResponse<T>>(

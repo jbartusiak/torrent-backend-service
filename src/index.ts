@@ -37,7 +37,7 @@ server.on('request', (request, response) => {
     response.on('finish', () => {
         response.statusCode === 200 || response.statusCode === 304 ?
             chalkLog(`[HTTP Status: ${response.statusCode}] Response to ${request.method} ${request.url} took ${new Date().getTime() - start}ms`) :
-            chalkError(`[HTTP Status: ${response.statusCode}] Response to ${request.method} ${request.url} took ${new Date().getTime() - start}ms`)
+            chalkError(`[HTTP Status: ${response.statusCode}] Error responding to ${request.method} ${request.url} took ${new Date().getTime() - start}ms`)
     })
 });
 
