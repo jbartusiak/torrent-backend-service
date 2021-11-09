@@ -14,12 +14,13 @@ import {
     TTorrentAccessorFields
 } from "../types/Transmission";
 import axios, {AxiosResponse} from 'axios';
-import {chalkLog} from "../logger";
+import {chalkError, chalkLog} from "../logger";
+import chalk from "chalk";
 
 const transmissionOptions: () => TransmissionOptions = () => {
     var options = {
         host: process.env.SERVER_HOST || 'localhost',
-        port: Number.parseInt(process.env.SERVER_PORT || '9091') ,
+        port: Number.parseInt(process.env.SERVER_PORT || '9091'),
         username: process.env.SERVER_USERNAME || 'transmission',
         password: process.env.SERVER_PASSWORD || 'torrent',
         ssl: false,
@@ -75,12 +76,28 @@ export class Transmission {
         await this.prepareSessionId();
         const headers = this.createHeaders();
 
-        chalkLog(`Calling transmission on ${this._requestUrl} with body: ${JSON.stringify(body)} and headers: ${JSON.stringify(headers)}`);
+        this.logInteraction(`POST ${this._requestUrl}\tmethod: ${body.method} ; ` +
+            `headers: ${JSON.stringify(headers)}; args: ${JSON.stringify(body.arguments)}`);
 
         return axios
             .post<any, AxiosResponse<T>>(
                 this._requestUrl, body, {headers})
-            .then(result => result.data);
+            .then(result => {
+                if (result.status === 200 || result.status === 304) {
+                    this.logInteraction(`RESPONSE ${result.status} POST ${this._requestUrl}\tmethod: ${body.method} ;`)
+                } else {
+                    this.logInteraction(`ErrorResponse ${result.status} POST ${this._requestUrl} ; method: ${body.method} ;`, true)
+                }
+                return result.data
+            });
+    }
+
+    private logInteraction(text: string, error = false) {
+        if (error) {
+            chalkError(chalk.red('[Transmission/RPC]\t') + text)
+        } else {
+            chalkLog(chalk.green('[Transmission/RPC]\t') + text);
+        }
     }
 
     public getAllTorrents(id: number) {
