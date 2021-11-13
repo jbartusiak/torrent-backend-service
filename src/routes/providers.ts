@@ -51,7 +51,7 @@ providersRouter.post('/providers', (req: Request<{}, {}, EnableProvidersRequest>
             if (enabled) TorrentClient.enableProvider(providerName);
             else TorrentClient.disableProvider(providerName);
         }
-        catch (error) {
+        catch (error: any) {
             errors[providerName] = error.message;
         }
     });

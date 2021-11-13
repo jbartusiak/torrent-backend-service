@@ -4,8 +4,7 @@ services:
   torrent_backend_service:
     container_name: torrent-backend-service
     image: satanicus1991/torrent-backend-service:latest
-    ports:
-      - "3001:3001/tcp"
+    network_mode: host
     environment:
       - SERVER_PORT=${SERVER_PORT}
       - SERVER_HOST=${SERVER_HOST}
